@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-slate-950 text-slate-100 overflow-hidden select-none">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV News Broadcast Background Engine</title>
+    <title>High-Definition Earth Globe & Broadcast FX Studio</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,7 +21,8 @@
                             cyan: '#00f0ff',
                             red: '#ff1744',
                             gold: '#ffb700',
-                            purple: '#9d4edd',
+                            emerald: '#00e676',
+                            purple: '#9d4edd'
                         }
                     }
                 }
@@ -31,189 +31,273 @@
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;600;800&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #02040a;
+            background-color: #010409;
+        }
+
+        .font-mono-tech {
+            font-family: 'Space Grotesk', monospace;
         }
 
         /* Glassmorphism TV HUD Panels */
         .hud-panel {
-            background: rgba(8, 15, 30, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 240, 255, 0.2);
+            background: rgba(6, 12, 24, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.25);
         }
 
         .hud-border {
-            box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.15), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.1), 0 12px 40px rgba(0, 0, 0, 0.6);
         }
 
-        /* Scanline Overlay */
+        /* TV Scanline Overlay */
         .tv-scanline {
             background: linear-gradient(
                 to bottom,
                 rgba(255,255,255,0),
                 rgba(255,255,255,0) 50%,
-                rgba(0, 0, 0, 0.3) 50%,
-                rgba(0, 0, 0, 0.3)
+                rgba(0, 0, 0, 0.25) 50%,
+                rgba(0, 0, 0, 0.25)
             );
             background-size: 100% 4px;
             pointer-events: none;
         }
 
-        /* Emergency Strobe Pulse */
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        /* Pulse Animations */
         @keyframes strobe {
             0%, 100% { opacity: 0; }
             50% { opacity: 0.35; }
         }
         .emergency-strobe {
-            animation: strobe 0.6s infinite;
+            animation: strobe 0.5s infinite;
         }
 
-        /* Glow utilities */
-        .glow-cyan {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+        /* Glowing text & borders */
+        .glow-text {
+            text-shadow: 0 0 12px currentColor;
         }
     </style>
 </head>
 <body class="h-full relative overflow-hidden bg-slate-950 flex items-center justify-center">
 
     <!-- MAIN BROADCAST VIEWPORT CONTAINER -->
-    <div id="broadcastViewport" class="relative w-full h-full overflow-hidden transition-all duration-700 ease-in-out">
+    <div id="broadcastViewport" class="relative w-full h-full overflow-hidden transition-all duration-700 ease-in-out cursor-grab active:cursor-grabbing">
 
-        <!-- 3D HIGH-TECH CANVAS STUDIO BACKGROUND -->
-        <canvas id="studioBackgroundCanvas" class="absolute inset-0 w-full h-full object-cover z-0"></canvas>
+        <!-- 3D HIGH-DEFINITION EARTH CANVAS -->
+        <canvas id="earthStudioCanvas" class="absolute inset-0 w-full h-full object-cover z-0"></canvas>
         
-        <!-- TV Scanline Effect Overlay -->
-        <div class="absolute inset-0 tv-scanline z-10"></div>
+        <!-- TV Scanline Overlay (Toggleable) -->
+        <div id="scanlineOverlay" class="absolute inset-0 tv-scanline z-10 transition-opacity duration-300"></div>
 
-        <!-- Emergency Flash Alert Light (Hidden by default) -->
+        <!-- Emergency Alert Overlay -->
         <div id="emergencyOverlay" class="absolute inset-0 bg-red-600 z-20 pointer-events-none opacity-0 transition-opacity duration-300"></div>
 
-        <!-- CLEAN TEXTLESS BROADCAST GRAPHICS LAYER (OVERLAYS ONLY VISUAL HUD GEOMETRY) -->
-        <div class="relative z-30 h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 pointer-events-none">
+        <!-- OVERLAY HUD LAYER (VISUAL EFFECTS & TV GRAPHICS) -->
+        <div id="hudLayer" class="relative z-30 h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 pointer-events-none transition-opacity duration-500">
 
-            <!-- TOP GRAPHIC BUG / SIGNAL INDICATOR (NO TEXT) -->
+            <!-- TOP BROADCAST HEADER & METRICS -->
             <header class="flex items-center justify-between pointer-events-auto">
-                <div class="hud-panel hud-border rounded-2xl p-3 flex items-center justify-center">
-                    <div class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-brand-cyan/20 border border-brand-cyan text-brand-cyan shadow-lg">
-                        <i id="channelIcon" data-lucide="globe-2" class="w-5 h-5 animate-spin" style="animation-duration: 25s;"></i>
-                        <span id="liveDot" class="absolute -top-1 -right-1 w-3 h-3 bg-brand-red rounded-full animate-ping"></span>
+                <div class="hud-panel hud-border rounded-2xl p-3 flex items-center gap-3">
+                    <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-brand-cyan/20 border border-brand-cyan text-brand-cyan shadow-lg">
+                        <i id="channelIcon" data-lucide="globe" class="w-5 h-5 animate-spin" style="animation-duration: 30s;"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-brand-red rounded-full animate-ping"></span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="liveBadge" class="px-1.5 py-0.5 rounded text-[10px] font-black bg-brand-red text-white uppercase tracking-wider">LIVE</span>
+                            <span id="headerTitle" class="text-xs font-bold tracking-widest text-white uppercase font-mono-tech">GLOBAL EARTH MONITOR 4K</span>
+                        </div>
+                        <div id="headerSubtitle" class="text-[10px] font-medium text-slate-400 tracking-wider">ORBITAL METRICS • REAL-TIME CONTINENTAL DATA</div>
                     </div>
                 </div>
 
-                <!-- Signal Frequency Graphic Equalizer Bars -->
-                <div class="hud-panel rounded-2xl px-4 py-3 flex items-center gap-1.5 h-12">
-                    <div class="w-1 bg-brand-cyan h-3 animate-pulse"></div>
-                    <div class="w-1 bg-brand-cyan h-6 animate-pulse" style="animation-delay: 0.15s"></div>
-                    <div class="w-1 bg-brand-cyan h-2 animate-pulse" style="animation-delay: 0.3s"></div>
-                    <div class="w-1 bg-brand-cyan h-5 animate-pulse" style="animation-delay: 0.45s"></div>
-                    <div class="w-1 bg-brand-cyan h-4 animate-pulse" style="animation-delay: 0.6s"></div>
+                <!-- SIGNAL EQUALIZER BARS & TIME DISPLAY -->
+                <div class="hud-panel hud-border rounded-2xl px-4 py-2.5 flex items-center gap-4 hidden sm:flex">
+                    <div class="text-right font-mono-tech">
+                        <div id="utcClock" class="text-xs font-bold text-brand-cyan">00:00:00 UTC</div>
+                        <div id="coordinatesText" class="text-[9px] text-slate-400">LAT: 0.0° N | LON: 0.0° E</div>
+                    </div>
+                    <div class="flex items-center gap-1 h-8">
+                        <div class="w-1 bg-brand-cyan h-3 animate-pulse"></div>
+                        <div class="w-1 bg-brand-cyan h-6 animate-pulse" style="animation-delay: 0.15s"></div>
+                        <div class="w-1 bg-brand-cyan h-2 animate-pulse" style="animation-delay: 0.3s"></div>
+                        <div class="w-1 bg-brand-cyan h-7 animate-pulse" style="animation-delay: 0.45s"></div>
+                        <div class="w-1 bg-brand-cyan h-4 animate-pulse" style="animation-delay: 0.6s"></div>
+                    </div>
                 </div>
             </header>
 
-            <!-- MIDDLE SIDE PICTURE-IN-PICTURE FRAME -->
+            <!-- MIDDLE FLOATING TELEMETRY SIDEBAR -->
             <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
-                <div class="hidden lg:block lg:col-start-10 lg:col-span-3 pointer-events-auto">
-                    <div class="hud-panel hud-border rounded-2xl p-2.5">
-                        <div class="relative aspect-video rounded-xl bg-slate-900/90 overflow-hidden border border-slate-800">
-                            <canvas id="pipCanvas" class="w-full h-full object-cover"></canvas>
+                <div class="hidden lg:block lg:col-span-3 pointer-events-auto">
+                    <div class="hud-panel hud-border rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-mono-tech flex items-center gap-1.5">
+                                <i data-lucide="satellite" class="w-3.5 h-3.5 text-brand-cyan"></i>
+                                SATELLITE STATUS
+                            </span>
+                            <span class="text-[10px] text-emerald-400 font-semibold uppercase">ONLINE</span>
+                        </div>
+
+                        <div class="space-y-2 text-xs font-mono-tech">
+                            <div class="flex justify-between text-slate-400">
+                                <span>ORBIT ALTITUDE:</span>
+                                <span class="text-white font-bold">420 KM</span>
+                            </div>
+                            <div class="flex justify-between text-slate-400">
+                                <span>ROTATION SPEED:</span>
+                                <span class="text-white font-bold" id="speedDisplay">1.0x NORMAL</span>
+                            </div>
+                            <div class="flex justify-between text-slate-400">
+                                <span>MAP MODE:</span>
+                                <span class="text-brand-cyan font-bold" id="modeDisplay">CLEAR VECTOR HD</span>
+                            </div>
+                            <div class="flex justify-between text-slate-400">
+                                <span>ATMOSPHERE FX:</span>
+                                <span class="text-emerald-400 font-bold" id="atmosphereDisplay">ENABLED</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini Map Compass Ring -->
+                        <div class="pt-2 flex justify-center">
+                            <div class="relative w-20 h-20 rounded-full border border-brand-cyan/40 flex items-center justify-center">
+                                <div class="absolute inset-1 rounded-full border border-slate-800 border-dashed animate-spin" style="animation-duration: 20s"></div>
+                                <span class="text-[10px] font-bold text-brand-cyan font-mono-tech">N 0°</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- BOTTOM LOWER THIRD GRAPHIC BASE BAR -->
+            <!-- BOTTOM LOWER THIRD BROADCAST TICKER -->
             <footer class="pointer-events-auto">
-                <div id="lowerThirdBox" class="hud-panel hud-border rounded-2xl h-4 border-l-8 border-l-brand-cyan transition-all duration-500 glow-cyan"></div>
+                <div id="lowerThirdBox" class="hud-panel hud-border rounded-2xl p-3 flex items-center justify-between border-l-4 border-l-brand-cyan gap-4">
+                    <div class="flex items-center gap-3">
+                        <span id="tickerCategory" class="px-2 py-1 rounded-md bg-brand-cyan/20 text-brand-cyan text-[11px] font-black uppercase tracking-wider font-mono-tech">WORLD DESK</span>
+                        <div id="tickerText" class="text-xs sm:text-sm font-semibold text-slate-200 tracking-wide truncate max-w-xl">
+                            REAL-TIME EARTH MONITORING • HIGH-DEFINITION LANDMASS VECTOR MAP WITH INTERACTIVE COUNTRY TARGETING
+                        </div>
+                    </div>
+                    <div class="text-[10px] font-mono-tech text-slate-400 hidden sm:block shrink-0">
+                        DRAG TO ROTATE • SCROLL TO ZOOM
+                    </div>
+                </div>
             </footer>
 
         </div>
 
     </div>
 
-    <!-- AUTO-HIDING DISCREET STUDIO CONTROL DECK (FADES OUT ON IDLE FOR CLEAN TV BROADCAST) -->
-    <div id="directorDeck" class="fixed top-4 right-4 z-50 flex flex-col items-end opacity-0 hover:opacity-100 transition-opacity duration-500">
-        <button id="btnToggleDeck" title="Studio Controls (Auto-Hides)" class="hud-panel rounded-xl p-2.5 text-brand-cyan/70 hover:text-white border border-brand-cyan/30 hover:border-brand-cyan transition-all shadow-xl flex items-center gap-2 text-xs">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-            <span class="text-[10px] uppercase tracking-wider font-semibold">Studio Controls</span>
+    <!-- AUTO-HIDING CONTROL DECK -->
+    <div id="directorDeck" class="fixed top-4 right-4 z-50 flex flex-col items-end transition-opacity duration-500 opacity-90 hover:opacity-100">
+        <button id="btnToggleDeck" title="Studio Controls (Auto-Hides)" class="hud-panel rounded-xl p-2.5 text-brand-cyan hover:text-white border border-brand-cyan/40 hover:border-brand-cyan transition-all shadow-2xl flex items-center gap-2 text-xs font-mono-tech">
+            <i data-lucide="settings-2" class="w-4 h-4"></i>
+            <span class="text-[11px] uppercase tracking-wider font-bold">CONTROL DECK</span>
         </button>
 
         <!-- Collapsible Control Card -->
-        <div id="deckPanel" class="hidden mt-2 w-56 hud-panel hud-border rounded-2xl p-4 space-y-3.5 border border-slate-700 shadow-2xl">
+        <div id="deckPanel" class="hidden mt-2 w-64 hud-panel hud-border rounded-2xl p-4 space-y-4 shadow-2xl border border-slate-800">
             
-            <!-- Channel Switcher Button -->
-            <div class="space-y-1">
-                <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">TV News Channel</span>
-                <button id="btnNextChannel" class="w-full h-10 rounded-xl bg-brand-cyan/20 border border-brand-cyan text-brand-cyan hover:bg-brand-cyan hover:text-slate-950 font-bold transition-all flex items-center justify-between px-3">
-                    <span id="channelLabel" class="text-xs">1. WORLD GLOBE</span>
-                    <i data-lucide="tv" class="w-4 h-4"></i>
+            <!-- Map Display Mode Toggle -->
+            <div class="space-y-1.5">
+                <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase font-mono-tech">Earth Map Style</span>
+                <div class="grid grid-cols-2 gap-1.5">
+                    <button id="btnMapClear" class="h-9 rounded-xl bg-brand-cyan/20 border border-brand-cyan text-brand-cyan font-bold text-xs hover:bg-brand-cyan hover:text-slate-950 transition-all">
+                        CLEAR HD MAP
+                    </button>
+                    <button id="btnMapFX" class="h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-bold text-xs hover:border-brand-cyan hover:text-white transition-all">
+                        FULL TV FX
+                    </button>
+                </div>
+            </div>
+
+            <!-- Focus Country Selector -->
+            <div class="space-y-1.5">
+                <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase font-mono-tech">Target Country</span>
+                <select id="countrySelect" class="w-full h-9 rounded-xl bg-slate-900 border border-slate-800 text-brand-cyan text-xs font-semibold px-3 focus:outline-none focus:border-brand-cyan">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
+            <!-- Auto Target Lock Toggle -->
+            <div class="flex items-center justify-between pt-1">
+                <span class="text-[11px] font-bold text-slate-300 font-mono-tech">Auto Target Cycle</span>
+                <button id="btnToggleAutoTarget" class="w-11 h-6 rounded-full bg-brand-cyan/30 border border-brand-cyan relative transition-all">
+                    <span id="autoTargetKnob" class="absolute top-0.5 left-5 w-4 h-4 rounded-full bg-brand-cyan transition-all shadow"></span>
                 </button>
             </div>
 
-            <!-- Orientation Toggle Button -->
-            <div class="space-y-1">
-                <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">Aspect Ratio</span>
-                <button id="btnTogglePortrait" class="w-full h-10 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-brand-cyan transition-all flex items-center justify-between px-3">
-                    <span id="aspectLabel" class="text-xs">16:9 Landscape</span>
-                    <i id="aspectIcon" data-lucide="monitor" class="w-4 h-4"></i>
-                </button>
+            <!-- Display Toggles -->
+            <div class="space-y-2 border-t border-slate-800/80 pt-3">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-mono-tech">Scanlines & Grid</span>
+                    <input type="checkbox" id="chkScanlines" checked class="accent-cyan-400 cursor-pointer w-4 h-4">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-mono-tech">Satellite Orbits</span>
+                    <input type="checkbox" id="chkSatellites" checked class="accent-cyan-400 cursor-pointer w-4 h-4">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-mono-tech">Atmosphere Glow</span>
+                    <input type="checkbox" id="chkAtmosphere" checked class="accent-cyan-400 cursor-pointer w-4 h-4">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-mono-tech">HUD Overlay Layer</span>
+                    <input type="checkbox" id="chkHUD" checked class="accent-cyan-400 cursor-pointer w-4 h-4">
+                </div>
             </div>
 
-            <!-- Visual Color Theme Buttons -->
-            <div class="space-y-1">
+            <!-- Visual Color Palette Theme Buttons -->
+            <div class="space-y-1.5 border-t border-slate-800/80 pt-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">Studio Lighting & Tint</span>
+                    <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase font-mono-tech">Theme Color</span>
                     <input type="color" id="customColorPicker" value="#00f0ff" title="Choose Custom Color" class="w-5 h-5 rounded cursor-pointer border-0 bg-transparent">
                 </div>
-                <!-- Extended Color Palette Presets -->
                 <div class="grid grid-cols-5 gap-1.5 pt-1">
-                    <button data-color="#00f0ff" title="Electric Cyan" class="theme-btn h-7 rounded-md bg-slate-900 border border-cyan-400/50 hover:scale-105 transition-transform flex items-center justify-center">
+                    <button data-color="#00f0ff" title="Cyan" class="theme-btn h-7 rounded-md bg-slate-900 border border-cyan-400/50 flex items-center justify-center hover:scale-110 transition-transform">
                         <span class="w-3 h-3 rounded-full bg-[#00f0ff]"></span>
                     </button>
-                    <button data-color="#ff1744" title="Breaking Red" class="theme-btn h-7 rounded-md bg-slate-900 border border-red-500/50 hover:scale-105 transition-transform flex items-center justify-center">
+                    <button data-color="#ff1744" title="Breaking Red" class="theme-btn h-7 rounded-md bg-slate-900 border border-red-500/50 flex items-center justify-center hover:scale-110 transition-transform">
                         <span class="w-3 h-3 rounded-full bg-[#ff1744]"></span>
                     </button>
-                    <button data-color="#ffb700" title="Market Gold" class="theme-btn h-7 rounded-md bg-slate-900 border border-amber-400/50 hover:scale-105 transition-transform flex items-center justify-center">
+                    <button data-color="#ffb700" title="Market Gold" class="theme-btn h-7 rounded-md bg-slate-900 border border-amber-400/50 flex items-center justify-center hover:scale-110 transition-transform">
                         <span class="w-3 h-3 rounded-full bg-[#ffb700]"></span>
                     </button>
-                    <button data-color="#9d4edd" title="Cyber Purple" class="theme-btn h-7 rounded-md bg-slate-900 border border-purple-400/50 hover:scale-105 transition-transform flex items-center justify-center">
-                        <span class="w-3 h-3 rounded-full bg-[#9d4edd]"></span>
-                    </button>
-                    <button data-color="#00e676" title="Emerald Green" class="theme-btn h-7 rounded-md bg-slate-900 border border-emerald-400/50 hover:scale-105 transition-transform flex items-center justify-center">
+                    <button data-color="#00e676" title="Emerald" class="theme-btn h-7 rounded-md bg-slate-900 border border-emerald-400/50 flex items-center justify-center hover:scale-110 transition-transform">
                         <span class="w-3 h-3 rounded-full bg-[#00e676]"></span>
                     </button>
-                    <button data-color="#ff9100" title="Sunset Orange" class="theme-btn h-7 rounded-md bg-slate-900 border border-orange-400/50 hover:scale-105 transition-transform flex items-center justify-center">
-                        <span class="w-3 h-3 rounded-full bg-[#ff9100]"></span>
-                    </button>
-                    <button data-color="#f50057" title="Neon Magenta" class="theme-btn h-7 rounded-md bg-slate-900 border border-pink-500/50 hover:scale-105 transition-transform flex items-center justify-center">
-                        <span class="w-3 h-3 rounded-full bg-[#f50057]"></span>
-                    </button>
-                    <button data-color="#1de9b6" title="Vibrant Teal" class="theme-btn h-7 rounded-md bg-slate-900 border border-teal-300/50 hover:scale-105 transition-transform flex items-center justify-center">
-                        <span class="w-3 h-3 rounded-full bg-[#1de9b6]"></span>
-                    </button>
-                    <button data-color="#29b6f6" title="Sky Blue" class="theme-btn h-7 rounded-md bg-slate-900 border border-sky-400/50 hover:scale-105 transition-transform flex items-center justify-center">
-                        <span class="w-3 h-3 rounded-full bg-[#29b6f6]"></span>
-                    </button>
-                    <button data-color="#e0e0e0" title="Studio Silver" class="theme-btn h-7 rounded-md bg-slate-900 border border-slate-300/50 hover:scale-105 transition-transform flex items-center justify-center">
-                        <span class="w-3 h-3 rounded-full bg-[#e0e0e0]"></span>
+                    <button data-color="#9d4edd" title="Cyber Violet" class="theme-btn h-7 rounded-md bg-slate-900 border border-purple-400/50 flex items-center justify-center hover:scale-110 transition-transform">
+                        <span class="w-3 h-3 rounded-full bg-[#9d4edd]"></span>
                     </button>
                 </div>
             </div>
 
-            <!-- Emergency Flash Alert Trigger -->
-            <button id="btnEmergencyTrigger" class="w-full h-9 rounded-xl bg-brand-red/80 hover:bg-brand-red text-white font-semibold transition-all flex items-center justify-center gap-2 text-xs">
-                <i data-lucide="bell-ring" class="w-4 h-4"></i>
-                <span>ALERT STROBE</span>
-            </button>
-            
-            <!-- Fullscreen Button -->
-            <button id="btnFullscreen" class="w-full h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center gap-2 text-xs">
-                <i data-lucide="maximize-2" class="w-4 h-4"></i>
-                <span>FULLSCREEN</span>
-            </button>
+            <!-- Action Buttons -->
+            <div class="space-y-2 border-t border-slate-800/80 pt-3">
+                <button id="btnEmergencyTrigger" class="w-full h-9 rounded-xl bg-brand-red/80 hover:bg-brand-red text-white font-semibold transition-all flex items-center justify-center gap-2 text-xs font-mono-tech">
+                    <i data-lucide="bell-ring" class="w-4 h-4"></i>
+                    <span>TRIGGER ALERT FLASH</span>
+                </button>
+                
+                <button id="btnFullscreen" class="w-full h-8 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center gap-2 text-xs font-mono-tech">
+                    <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+                    <span>FULLSCREEN</span>
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -221,11 +305,10 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Web Audio Sound Engine (Synthesized TV Chimes)
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
 
-        function playBeep(freq = 880, duration = 0.12, type = 'sine') {
+        function playBeep(freq = 880, duration = 0.1, type = 'sine') {
             try {
                 if (!audioCtx) audioCtx = new AudioCtx();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -236,7 +319,7 @@
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 
-                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
                 
                 osc.connect(gain);
@@ -247,90 +330,141 @@
             } catch (e) {}
         }
 
-        // Canvas Setup
-        const bgCanvas = document.getElementById('studioBackgroundCanvas');
+        const featuredCountries = [
+            { 
+                name: "IRAQ", city: "BAGHDAD", lat: 33.3, lon: 44.3, 
+                desc: "MIDDLE EAST HUB • MESOPOTAMIA BASIN",
+                outline: [[33,39],[37,42],[37,46],[31,48],[30,47],[29,48],[31,44],[33,39]]
+            },
+            { 
+                name: "JAPAN", city: "TOKYO", lat: 35.6, lon: 139.6, 
+                desc: "PACIFIC RIM • TOKYO METROPOLIS DESK",
+                outline: [[45,142],[40,140],[35,136],[31,130],[34,135],[38,141],[45,145],[45,142]]
+            },
+            { 
+                name: "UNITED STATES", city: "WASHINGTON D.C.", lat: 38.9, lon: -77.0, 
+                desc: "NORTH AMERICA • ATLANTIC/PACIFIC HUB",
+                outline: [[48,-124],[49,-95],[47,-68],[25,-80],[29,-95],[31,-105],[32,-117],[48,-124]]
+            },
+            { 
+                name: "UNITED KINGDOM", city: "LONDON", lat: 51.5, lon: -0.1, 
+                desc: "WESTERN EUROPE DESK • GMT ZERO",
+                outline: [[58,-5],[58,-2],[52,2],[50,-5],[54,-4],[58,-5]]
+            },
+            { 
+                name: "EGYPT", city: "CAIRO", lat: 30.0, lon: 31.2, 
+                desc: "NORTH AFRICA • NILE DELTA MONITOR",
+                outline: [[31,25],[31,34],[22,36],[22,25],[31,25]]
+            },
+            { 
+                name: "BRAZIL", city: "BRASÍLIA", lat: -15.8, lon: -47.9, 
+                desc: "SOUTH AMERICA • AMAZON BASIN NETWORK",
+                outline: [[4,-51],[-5,-35],[-22,-41],[-33,-53],[-18,-58],[-4,-70],[4,-51]]
+            },
+            { 
+                name: "CHINA", city: "BEIJING", lat: 39.9, lon: 116.4, 
+                desc: "EAST ASIA • CAPITAL METROPOLITAN REGION",
+                outline: [[53,121],[42,130],[30,122],[22,114],[28,97],[36,75],[48,87],[53,121]]
+            },
+            { 
+                name: "GERMANY", city: "BERLIN", lat: 52.5, lon: 13.4, 
+                desc: "CENTRAL EUROPE • EU CENTER BUREAU",
+                outline: [[54,9],[54,14],[47,13],[47,7],[54,9]]
+            },
+            { 
+                name: "AUSTRALIA", city: "CANBERRA", lat: -35.3, lon: 149.1, 
+                desc: "OCEANIA FEED • PACIFIC SOUTH MONITOR",
+                outline: [[-12,130],[-15,145],[-38,150],[-35,117],[-20,114],[-12,130]]
+            },
+            { 
+                name: "UNITED ARAB EMIRATES", city: "ABU DHABI", lat: 24.4, lon: 54.3, 
+                desc: "GULF BUREAU • ARABIAN PENINSULA",
+                outline: [[26,56],[24,56],[23,53],[25,52],[26,56]]
+            },
+            { 
+                name: "FRANCE", city: "PARIS", lat: 48.8, lon: 2.3, 
+                desc: "WESTERN EUROPE BUREAU • PARIS STUDIO",
+                outline: [[50,2],[48,7],[43,7],[43,3],[48,-4],[50,2]]
+            }
+        ];
+
+        const continentPolygons = [
+            // NORTH AMERICA
+            [[70,-165],[72,-125],[60,-80],[48,-65],[25,-80],[15,-90],[10,-83],[14,-92],[20,-105],[32,-117],[48,-124],[60,-140],[65,-168]],
+            // GREENLAND
+            [[82,-30],[80,-15],[68,-22],[60,-45],[75,-60],[82,-30]],
+            // SOUTH AMERICA
+            [[10,-75],[8,-60],[-5,-35],[-22,-41],[-35,-55],[-54,-68],[-45,-75],[-18,-72],[-4,-80],[10,-75]],
+            // EUROPE
+            [[70,25],[60,30],[55,38],[45,35],[40,28],[36, -5],[43,-9],[48,-4],[58,6],[62,5],[70,25]],
+            // AFRICA
+            [[36, -5],[37,10],[32,32],[12,51],[-10,40],[-34,20],[-32,16],[5, -5],[15,-17],[28,-13],[36, -5]],
+            // ASIA
+            [[75,60],[75,100],[70,170],[60,160],[40,145],[22,120],[10,105],[8,77],[22,69],[25,57],[30,48],[40,35],[55,40],[65,60],[75,60]],
+            // INDIA SUB-CONTINENT
+            [[30,70],[28,88],[20,85],[8,77],[15,73],[25,68],[30,70]],
+            // AUSTRALIA
+            [[-12,130],[-15,145],[-38,150],[-35,117],[-20,114],[-12,130]],
+            // ANTARCTICA
+            [[-70,0],[-70,90],[-70,180],[-70,-90],[-70,0]]
+        ];
+
+        const bgCanvas = document.getElementById('earthStudioCanvas');
         const ctx = bgCanvas.getContext('2d');
         const broadcastViewport = document.getElementById('broadcastViewport');
+
+        let themeColor = '#00f0ff';
+        let mapStyleMode = 'CLEAR'; // 'CLEAR' | 'FX'
+        let autoTargetCycling = true;
+        
+        let showScanlines = true;
+        let showSatellites = true;
+        let showAtmosphere = true;
+        let showHUD = true;
+
+        // Globe Camera Orbit & Scale State
+        let globeRadius = 240;
+        let currentRotY = 0.5;
+        let currentRotX = 0.2;
+        let targetRotY = 0.5;
+        let targetRotX = 0.2;
+        let zoomScale = 1.0;
+        let targetZoomScale = 1.0;
+
+        // Dragging controls
+        let isDragging = false;
+        let previousMouseX = 0;
+        let previousMouseY = 0;
+
+        // Auto Focus state machine
+        let currentCountryIdx = 0;
+        let focusState = 'ROTATING'; // 'ROTATING' | 'LOCKING' | 'HOLDING'
+        let focusTimer = 0;
+        let nextFocusInterval = 280; // ~4.6 seconds
+        let holdDuration = 130;       // ~2.2 seconds
+
+        let time = 0;
+
+        // Ambient particles
+        const particles = [];
+        for (let i = 0; i < 150; i++) {
+            particles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                radius: Math.random() * 2 + 0.5,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3
+            });
+        }
 
         function resizeCanvas() {
             bgCanvas.width = broadcastViewport.clientWidth;
             bgCanvas.height = broadcastViewport.clientHeight;
+            const minDim = Math.min(bgCanvas.width, bgCanvas.height);
+            globeRadius = minDim * 0.28;
         }
         window.addEventListener('resize', resizeCanvas);
 
-        // Featured Countries Database for Animated Target Focus
-        const featuredCountries = [
-            { name: "JAPAN", city: "TOKYO", lat: 35.6, lon: 139.6, status: "ASIA BROADCAST" },
-            { name: "UNITED STATES", city: "WASHINGTON D.C.", lat: 38.9, lon: -77.0, status: "NORTH AMERICA" },
-            { name: "IRAQ", city: "BAGHDAD", lat: 33.3, lon: 44.3, status: "MIDDLE EAST HUB" },
-            { name: "UNITED KINGDOM", city: "LONDON", lat: 51.5, lon: -0.1, status: "EUROPE DESK" },
-            { name: "EGYPT", city: "CAIRO", lat: 30.0, lon: 31.2, status: "NORTH AFRICA" },
-            { name: "BRAZIL", city: "RIO DE JANEIRO", lat: -22.9, lon: -43.1, status: "SOUTH AMERICA" },
-            { name: "CHINA", city: "BEIJING", lat: 39.9, lon: 116.4, status: "EAST ASIA" },
-            { name: "AUSTRALIA", city: "SYDNEY", lat: -33.8, lon: 151.2, status: "OCEANIA FEED" },
-            { name: "GERMANY", city: "BERLIN", lat: 52.5, lon: 13.4, status: "CENTRAL EUROPE" },
-            { name: "UNITED ARAB EMIRATES", city: "DUBAI", lat: 25.2, lon: 55.2, status: "GULF BUREAU" },
-            { name: "FRANCE", city: "PARIS", lat: 48.8, lon: 2.3, status: "EU MONITOR" }
-        ];
-
-        // 3D Globe Camera and Focus State Controller
-        let currentRotY = 0;
-        let currentRotX = 0;
-        let targetRotY = 0;
-        let targetRotX = 0;
-        
-        let focusState = 'ROTATING'; // 'ROTATING' | 'LOCKING' | 'HOLDING' | 'UNLOCKING'
-        let currentCountryIdx = 0;
-        let focusTimer = 0;
-        let nextFocusTime = 260; // Frames between country targets (~4.5s)
-        let holdDuration = 120;  // Holds spotlight for ~2.0 seconds (60fps * 2)
-
-        // Pre-calculated Latitude / Longitude Continental Land Dots for 3D Earth Globe Rendering
-        const worldLandDots = [];
-        for (let lat = -60; lat <= 70; lat += 6) {
-            for (let lon = -180; lon <= 180; lon += 8) {
-                const isLand = 
-                    (lat > 15 && lat < 70 && lon > -130 && lon < -60) || // North America
-                    (lat > -55 && lat < 10 && lon > -80 && lon < -35) ||  // South America
-                    (lat > 35 && lat < 65 && lon > -10 && lon < 50) ||   // Europe
-                    (lat > -35 && lat < 35 && lon > -20 && lon < 50) ||  // Africa
-                    (lat > 5 && lat < 70 && lon > 60 && lon < 140) ||    // Asia
-                    (lat > -40 && lat < -10 && lon > 110 && lon < 155);  // Australia
-
-                if (isLand || Math.random() < 0.06) {
-                    worldLandDots.push({
-                        lat: (lat * Math.PI) / 180,
-                        lon: (lon * Math.PI) / 180
-                    });
-                }
-            }
-        }
-
-        // Ambient particles
-        const particles = [];
-        for (let i = 0; i < 180; i++) {
-            particles.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                radius: Math.random() * 2 + 0.8,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-            });
-        }
-
-        let time = 0;
-        let themeColor = '#00f0ff';
-        let currentChannel = 0;
-
-        // Channel Configurations
-        const channelConfigs = [
-            { id: 0, name: '1. WORLD NEWS 3D', color: '#00f0ff' },
-            { id: 1, name: '2. BREAKING ALERT', color: '#ff1744' },
-            { id: 2, name: '3. GLOBAL MARKETS', color: '#ffb700' },
-            { id: 3, name: '4. CYBER TECH GRID', color: '#9d4edd' },
-        ];
-
-        // Convert Hex to RGB for Canvas Alpha Blending
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
@@ -340,93 +474,120 @@
             } : { r: 0, g: 240, b: 255 };
         }
 
-        function setStudioThemeColor(colorHex) {
-            themeColor = colorHex;
-            const lowerThirdBox = document.getElementById('lowerThirdBox');
-            const channelIcon = document.getElementById('channelIcon');
-            
-            lowerThirdBox.style.borderColor = themeColor;
-            lowerThirdBox.style.boxShadow = `0 0 25px ${themeColor}66`;
-            if (channelIcon && channelIcon.parentElement) {
-                channelIcon.parentElement.style.borderColor = themeColor;
-                channelIcon.parentElement.style.color = themeColor;
-            }
+        // Project Spherical Lat/Lon into 3D Projected Screen Coordinates
+        function projectLatLon(latDeg, lonDeg, radOffset = 0) {
+            const latRad = (latDeg * Math.PI) / 180;
+            const lonRad = (lonDeg * Math.PI) / 180;
+
+            const r = (globeRadius + radOffset) * zoomScale;
+
+            const cosLat = Math.cos(latRad);
+            const sinLat = Math.sin(latRad);
+            const cosLon = Math.cos(lonRad + currentRotY);
+            const sinLon = Math.sin(lonRad + currentRotY);
+
+            // Sphere 3D
+            const x3d = r * cosLat * sinLon;
+            const y3d_raw = r * sinLat;
+            const z3d_raw = r * cosLat * cosLon;
+
+            // X-Tilt
+            const cosRotX = Math.cos(currentRotX);
+            const sinRotX = Math.sin(currentRotX);
+
+            const y3d = y3d_raw * cosRotX - z3d_raw * sinRotX;
+            const z3d = y3d_raw * sinRotX + z3d_raw * cosRotX;
+
+            return {
+                x: x3d,
+                y: -y3d,
+                z: z3d,
+                visible: z3d > 0
+            };
         }
 
-        // HIGH-END AUTHENTIC TV NEWS BROADCAST BACKGROUND ENGINE
-        function drawStudioBackground() {
-            time += 0.012;
+        const countrySelect = document.getElementById('countrySelect');
+        featuredCountries.forEach((c, idx) => {
+            const opt = document.createElement('option');
+            opt.value = idx;
+            opt.textContent = `${c.name} (${c.city})`;
+            countrySelect.appendChild(opt);
+        });
+
+        countrySelect.addEventListener('change', (e) => {
+            currentCountryIdx = parseInt(e.target.value);
+            lockOntoCountry(currentCountryIdx);
+        });
+
+        function lockOntoCountry(idx) {
+            const country = featuredCountries[idx];
+            targetRotY = -(country.lon * Math.PI / 180) - Math.PI / 2;
+            targetRotX = (country.lat * Math.PI / 180) * 0.7;
+            targetZoomScale = 1.35;
+            focusState = 'LOCKING';
+            focusTimer = 0;
+            
+            document.getElementById('tickerCategory').innerText = country.name;
+            document.getElementById('tickerText').innerText = `${country.desc} • LAT: ${country.lat}° | LON: ${country.lon}°`;
+            playBeep(1200, 0.1);
+        }
+
+        broadcastViewport.addEventListener('mousedown', (e) => {
+            if (e.target.closest('#directorDeck') || e.target.closest('#hudLayer header') || e.target.closest('#hudLayer footer')) return;
+            isDragging = true;
+            previousMouseX = e.clientX;
+            previousMouseY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - previousMouseX;
+            const deltaY = e.clientY - previousMouseY;
+
+            currentRotY += deltaX * 0.005;
+            currentRotX += deltaY * 0.005;
+
+            // Clamp vertical tilt
+            currentRotX = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, currentRotX));
+
+            previousMouseX = e.clientX;
+            previousMouseY = e.clientY;
+            
+            // Manual drag disables auto-target hold
+            if (focusState === 'HOLDING') focusState = 'ROTATING';
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        broadcastViewport.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                targetZoomScale = Math.min(2.5, targetZoomScale + 0.15);
+            } else {
+                targetZoomScale = Math.max(0.7, targetZoomScale - 0.15);
+            }
+        }, { passive: false });
+
+        function renderScene() {
+            time += 0.015;
             const w = bgCanvas.width;
             const h = bgCanvas.height;
             const rgb = hexToRgb(themeColor);
 
-            // 1. DEEP TV STUDIO ATMOSPHERIC GRADIENT
-            const bgGradient = ctx.createRadialGradient(w * 0.5, h * 0.4, 40, w * 0.5, h * 0.5, Math.max(w, h));
-            bgGradient.addColorStop(0, `rgba(${Math.floor(rgb.r * 0.25)}, ${Math.floor(rgb.g * 0.25)}, ${Math.floor(rgb.b * 0.35)}, 1)`);
-            bgGradient.addColorStop(0.55, '#030814');
-            bgGradient.addColorStop(1, '#010206');
-            ctx.fillStyle = bgGradient;
-            ctx.fillRect(0, 0, w, h);
+            // Interpolate smooth camera movements
+            zoomScale += (targetZoomScale - zoomScale) * 0.08;
 
-            // 2. CURVED TV STUDIO NEWSROOM BACKDROP WALL GRID
-            ctx.save();
-            ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08)`;
-            ctx.lineWidth = 1;
-
-            const centerY = h * 0.45;
-            for (let r = 100; r <= Math.max(w, h) * 0.9; r += 70) {
-                ctx.beginPath();
-                ctx.ellipse(w / 2, centerY, r * 1.4, r * 0.45, 0, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            // Radial studio wall pillars
-            for (let a = 0; a < Math.PI * 2; a += Math.PI / 10) {
-                ctx.beginPath();
-                ctx.moveTo(w / 2, centerY);
-                ctx.lineTo(w / 2 + Math.cos(a) * w, centerY + Math.sin(a) * h * 0.7);
-                ctx.stroke();
-            }
-            ctx.restore();
-
-            // 3. SWEEPING BROADCAST LIGHT BEAMS & LENS FLARES
-            ctx.save();
-            const beamX1 = w * 0.5 + Math.sin(time * 0.5) * (w * 0.3);
-            const beamGrad = ctx.createRadialGradient(beamX1, h * 0.3, 10, beamX1, h * 0.3, w * 0.6);
-            beamGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`);
-            beamGrad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = beamGrad;
-            ctx.beginPath();
-            ctx.arc(beamX1, h * 0.3, w * 0.6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-
-            // 4. 3D NEWSROOM GRAPHIC ELEMENT IN CENTER
-            ctx.save();
-            ctx.translate(w / 2, h * 0.45);
-
-            if (currentChannel === 0 || currentChannel === 1) {
-                // UPDATE GLOBE ROTATION & COUNTRY LOCK STATE MACHINE
+            if (autoTargetCycling && !isDragging) {
                 focusTimer++;
 
                 if (focusState === 'ROTATING') {
-                    currentRotY += 0.006;
-                    currentRotX += (0 - currentRotX) * 0.05;
+                    currentRotY += 0.004;
+                    currentRotX += (0.2 - currentRotX) * 0.03;
 
-                    if (focusTimer > nextFocusTime) {
-                        focusState = 'LOCKING';
-                        focusTimer = 0;
-                        
-                        // Select target country
-                        const country = featuredCountries[currentCountryIdx];
-                        // Target angles to align selected country straight facing the viewer
-                        targetRotY = - (country.lon * Math.PI / 180) - Math.PI / 2;
-                        targetRotX = (country.lat * Math.PI / 180) * 0.75;
-                        
-                        playBeep(1200, 0.08);
+                    if (focusTimer > nextFocusInterval) {
+                        lockOntoCountry(currentCountryIdx);
                     }
                 } else if (focusState === 'LOCKING') {
-                    // Smoothly ease rotation toward country coordinates
                     let diffY = (targetRotY - currentRotY) % (Math.PI * 2);
                     if (diffY > Math.PI) diffY -= Math.PI * 2;
                     if (diffY < -Math.PI) diffY += Math.PI * 2;
@@ -434,283 +595,310 @@
                     currentRotY += diffY * 0.08;
                     currentRotX += (targetRotX - currentRotX) * 0.08;
 
-                    if (Math.abs(diffY) < 0.015 && Math.abs(targetRotX - currentRotX) < 0.015) {
+                    if (Math.abs(diffY) < 0.02 && Math.abs(targetRotX - currentRotX) < 0.02) {
                         focusState = 'HOLDING';
                         focusTimer = 0;
-                        playBeep(1500, 0.15, 'sine');
-                        setTimeout(() => playBeep(2000, 0.18, 'sine'), 100);
+                        playBeep(1600, 0.15, 'sine');
                     }
                 } else if (focusState === 'HOLDING') {
-                    // Micro ambient drift during 2-second hold
-                    currentRotY += 0.0005;
+                    currentRotY += 0.0006; // subtle drift
 
                     if (focusTimer > holdDuration) {
                         focusState = 'ROTATING';
                         focusTimer = 0;
+                        targetZoomScale = 1.0;
                         currentCountryIdx = (currentCountryIdx + 1) % featuredCountries.length;
+                        countrySelect.value = currentCountryIdx;
                     }
                 }
+            }
 
-                // GLOBE 3D RENDERING
-                const globeR = Math.min(w, h) * 0.28;
-                const cosRotX = Math.cos(currentRotX);
-                const sinRotX = Math.sin(currentRotX);
+            // Update telemetry UI text
+            const centerLat = (-currentRotX * 180 / Math.PI).toFixed(1);
+            const centerLon = (((-currentRotY - Math.PI / 2) * 180 / Math.PI) % 360).toFixed(1);
+            document.getElementById('coordinatesText').innerText = `LAT: ${centerLat}° | LON: ${centerLon}°`;
+            document.getElementById('utcClock').innerText = new Date().toISOString().substr(11, 8) + ' UTC';
 
-                // Latitude & Longitude Wireframe Grid Lines
-                ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`;
+            // 1. BACKGROUND DEEP SPACE / STUDIO ATMOSPHERE
+            ctx.clearRect(0, 0, w, h);
+
+            const bgGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 50, w * 0.5, h * 0.5, Math.max(w, h));
+            bgGrad.addColorStop(0, `rgba(${Math.floor(rgb.r * 0.15)}, ${Math.floor(rgb.g * 0.18)}, ${Math.floor(rgb.b * 0.28)}, 1)`);
+            bgGrad.addColorStop(0.6, '#020612');
+            bgGrad.addColorStop(1, '#000206');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 2. BACKDROP STUDIO GRAPHIC RINGS (In Full FX Mode)
+            if (mapStyleMode === 'FX') {
+                ctx.save();
+                ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08)`;
                 ctx.lineWidth = 1;
-
-                // Latitude rings with 3D tilt
-                for (let latDeg = -60; latDeg <= 60; latDeg += 20) {
-                    const latRad = (latDeg * Math.PI) / 180;
-                    const rLat = globeR * Math.cos(latRad);
-                    const yLat = globeR * Math.sin(latRad);
-
+                for (let r = 120; r <= Math.max(w, h); r += 80) {
                     ctx.beginPath();
-                    ctx.ellipse(0, -yLat * cosRotX, rLat, rLat * 0.3 * cosRotX, 0, 0, Math.PI * 2);
+                    ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
                     ctx.stroke();
                 }
+                ctx.restore();
+            }
 
-                // Longitude meridians
-                for (let lonDeg = 0; lonDeg < 180; lonDeg += 30) {
-                    const lonRad = (lonDeg * Math.PI) / 180 + currentRotY;
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, globeR * Math.cos(lonRad), globeR * cosRotX, 0, 0, Math.PI * 2);
-                    ctx.stroke();
-                }
+            // Center origin for 3D Globe
+            ctx.save();
+            ctx.translate(w / 2, h / 0.52);
 
-                // Sweeping Equator Orbit Ring
-                ctx.strokeStyle = themeColor;
-                ctx.lineWidth = 2;
+            const currentR = globeRadius * zoomScale;
+
+            // 3. ATMOSPHERE OUTER GLOW HALO
+            if (showAtmosphere) {
+                ctx.save();
+                const haloGrad = ctx.createRadialGradient(0, 0, currentR * 0.95, 0, 0, currentR * 1.35);
+                haloGrad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`);
+                haloGrad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12)`);
+                haloGrad.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = haloGrad;
                 ctx.beginPath();
-                ctx.ellipse(0, 0, globeR * 1.35, globeR * 0.38 * cosRotX, -0.2, 0, Math.PI * 2);
-                ctx.stroke();
+                ctx.arc(0, 0, currentR * 1.35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
 
-                // Pulsing Orbital Satellites
+            // 4. EARTH SPHERE BASE COLOR & DAY/NIGHT SHADOW
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(0, 0, currentR, 0, Math.PI * 2);
+
+            // Globe Ocean Base Color
+            if (mapStyleMode === 'CLEAR') {
+                const oceanGrad = ctx.createRadialGradient(-currentR * 0.3, -currentR * 0.3, currentR * 0.1, 0, 0, currentR);
+                oceanGrad.addColorStop(0, '#0c223a');
+                oceanGrad.addColorStop(0.7, '#061324');
+                oceanGrad.addColorStop(1, '#020914');
+                ctx.fillStyle = oceanGrad;
+            } else {
+                ctx.fillStyle = '#030a16';
+            }
+            ctx.fill();
+
+            // Sphere crisp outer border
+            ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            // 5. GEOGRAPHIC LATITUDE & LONGITUDE GRID LINES
+            ctx.save();
+            ctx.strokeStyle = mapStyleMode === 'CLEAR' ? 'rgba(0, 240, 255, 0.15)' : `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`;
+            ctx.lineWidth = 0.8;
+
+            // Latitudes
+            for (let lat = -60; lat <= 60; lat += 20) {
+                ctx.beginPath();
+                let first = true;
+                for (let lon = -180; lon <= 180; lon += 10) {
+                    const p = projectLatLon(lat, lon);
+                    if (p.visible) {
+                        first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+                        first = false;
+                    } else {
+                        first = true;
+                    }
+                }
+                ctx.stroke();
+            }
+
+            // Longitudes
+            for (let lon = -180; lon < 180; lon += 30) {
+                ctx.beginPath();
+                let first = true;
+                for (let lat = -90; lat <= 90; lat += 10) {
+                    const p = projectLatLon(lat, lon);
+                    if (p.visible) {
+                        first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+                        first = false;
+                    } else {
+                        first = true;
+                    }
+                }
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // 6. CLEAR HIGH-DEFINITION CONTINENT LANDMASES
+            ctx.save();
+            continentPolygons.forEach(poly => {
+                ctx.beginPath();
+                let first = true;
+
+                poly.forEach(coord => {
+                    const p = projectLatLon(coord[0], coord[1]);
+                    if (p.visible) {
+                        first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+                        first = false;
+                    } else {
+                        first = true;
+                    }
+                });
+
+                if (mapStyleMode === 'CLEAR') {
+                    // Crisp High-Contrast Vector Land fill
+                    ctx.fillStyle = 'rgba(0, 220, 180, 0.25)';
+                    ctx.strokeStyle = '#00f0ff';
+                    ctx.lineWidth = 1.5;
+                } else {
+                    // Futuristic Neon Wireframe
+                    ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`;
+                    ctx.strokeStyle = themeColor;
+                    ctx.lineWidth = 1.2;
+                }
+
+                ctx.fill();
+                ctx.stroke();
+            });
+            ctx.restore();
+
+            // 7. HIGHLIGHT TARGETED COUNTRY BORDER OUTLINE
+            const currentCountry = featuredCountries[currentCountryIdx];
+            if (currentCountry && currentCountry.outline) {
+                ctx.save();
+                ctx.beginPath();
+                let first = true;
+                currentCountry.outline.forEach(coord => {
+                    const p = projectLatLon(coord[0], coord[1], 1.5);
+                    if (p.visible) {
+                        first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+                        first = false;
+                    }
+                });
+                ctx.closePath();
+                ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2.5;
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // 8. SATELLITE ORBIT TRACKS
+            if (showSatellites) {
+                ctx.save();
+                ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`;
+                ctx.lineWidth = 1;
+                ctx.setLineDash([6, 6]);
+
+                const cosRotX = Math.cos(currentRotX);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, currentR * 1.4, currentR * 0.45 * cosRotX, -0.3, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Animated Satellites
                 for (let s = 0; s < 3; s++) {
-                    const satAngle = time * (0.8 + s * 0.3) + s * 2.1;
-                    const sx = Math.cos(satAngle) * (globeR * 1.35);
-                    const sy = Math.sin(satAngle) * (globeR * 0.38) * cosRotX;
-                    
+                    const satAngle = time * (0.6 + s * 0.2) + s * 2.0;
+                    const sx = Math.cos(satAngle) * (currentR * 1.4);
+                    const sy = Math.sin(satAngle) * (currentR * 0.45) * cosRotX;
+
                     ctx.fillStyle = '#ffffff';
                     ctx.beginPath();
                     ctx.arc(sx, sy, 3.5, 0, Math.PI * 2);
                     ctx.fill();
 
                     ctx.strokeStyle = themeColor;
-                    ctx.lineWidth = 1;
+                    ctx.lineWidth = 1.2;
                     ctx.beginPath();
                     ctx.arc(sx, sy, 8 + Math.sin(time * 6 + s) * 4, 0, Math.PI * 2);
                     ctx.stroke();
                 }
+                ctx.restore();
+            }
 
-                // Continent Map Dot Matrix with 3D Projection & Tilt
-                ctx.fillStyle = themeColor;
-                worldLandDots.forEach(pt => {
-                    const cosLat = Math.cos(pt.lat);
-                    const sinLat = Math.sin(pt.lat);
-                    const cosLon = Math.cos(pt.lon + currentRotY);
-                    const sinLon = Math.sin(pt.lon + currentRotY);
+            // 9. DRAW TARGET SPOTLIGHT & FLOATING 3D HOLOGRAM BADGE
+            if (currentCountry) {
+                const targetP = projectLatLon(currentCountry.lat, currentCountry.lon);
 
-                    // 3D Sphere coordinates
-                    const x3d = globeR * cosLat * sinLon;
-                    const y3d_raw = globeR * sinLat;
-                    const z3d_raw = globeR * cosLat * cosLon;
+                if (targetP.visible) {
+                    const spotX = targetP.x;
+                    const spotY = targetP.y;
 
-                    // Apply X-axis tilt
-                    const y3d = y3d_raw * cosRotX - z3d_raw * sinRotX;
-                    const z3d = y3d_raw * sinRotX + z3d_raw * cosRotX;
+                    ctx.save();
+                    // Pulsing Ring
+                    const pulse = (Math.sin(time * 10) + 1) * 0.5;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(spotX, spotY, 14 + pulse * 10, 0, Math.PI * 2);
+                    ctx.stroke();
 
-                    if (z3d > 0) {
-                        const alpha = z3d / globeR;
-                        ctx.globalAlpha = alpha * 0.9;
-                        ctx.beginPath();
-                        ctx.arc(x3d, -y3d, 2.3 * (0.8 + alpha * 0.5), 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                });
+                    // Center Dot
+                    ctx.fillStyle = themeColor;
+                    ctx.beginPath();
+                    ctx.arc(spotX, spotY, 5, 0, Math.PI * 2);
+                    ctx.fill();
 
-                // DRAW TARGETED COUNTRY SPOTLIGHT HUD & FLOATING 3D CALLOUT BADGE
-                if (focusState === 'HOLDING' || focusState === 'LOCKING') {
-                    const country = featuredCountries[currentCountryIdx];
-                    const cLatRad = (country.lat * Math.PI) / 180;
-                    const cLonRad = (country.lon * Math.PI) / 180;
+                    // Crosshair
+                    ctx.strokeStyle = themeColor;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(spotX - 22, spotY); ctx.lineTo(spotX - 8, spotY);
+                    ctx.moveTo(spotX + 8, spotY); ctx.lineTo(spotX + 22, spotY);
+                    ctx.moveTo(spotX, spotY - 22); ctx.lineTo(spotX, spotY - 8);
+                    ctx.moveTo(spotX, spotY + 8); ctx.lineTo(spotX, spotY + 22);
+                    ctx.stroke();
 
-                    const cosLat = Math.cos(cLatRad);
-                    const sinLat = Math.sin(cLatRad);
-                    const cosLon = Math.cos(cLonRad + currentRotY);
-                    const sinLon = Math.sin(cLonRad + currentRotY);
-
-                    const x3d = globeR * cosLat * sinLon;
-                    const y3d_raw = globeR * sinLat;
-                    const z3d_raw = globeR * cosLat * cosLon;
-
-                    const y3d = y3d_raw * cosRotX - z3d_raw * sinRotX;
-                    const z3d = y3d_raw * sinRotX + z3d_raw * cosRotX;
-
-                    if (z3d > 0) {
-                        const spotX = x3d;
-                        const spotY = -y3d;
-
-                        // Pulsing Target Lock Reticle
-                        const pulse = (Math.sin(time * 12) + 1) * 0.5;
-                        ctx.save();
-                        ctx.globalAlpha = 1.0;
-
-                        // Outer radar scanning ring
-                        ctx.strokeStyle = '#ffffff';
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(spotX, spotY, 18 + pulse * 8, 0, Math.PI * 2);
-                        ctx.stroke();
-
-                        // Inner target glow
-                        ctx.fillStyle = themeColor;
-                        ctx.beginPath();
-                        ctx.arc(spotX, spotY, 6, 0, Math.PI * 2);
-                        ctx.fill();
-
-                        // Crosshair lines
-                        ctx.strokeStyle = themeColor;
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.moveTo(spotX - 28, spotY); ctx.lineTo(spotX - 10, spotY);
-                        ctx.moveTo(spotX + 10, spotY); ctx.lineTo(spotX + 28, spotY);
-                        ctx.moveTo(spotX, spotY - 28); ctx.lineTo(spotX, spotY - 10);
-                        ctx.moveTo(spotX, spotY + 10); ctx.lineTo(spotX, spotY + 28);
-                        ctx.stroke();
-
-                        // Laser Pointer Line to Floating Glass HUD Badge
-                        const badgeX = spotX + (spotX > 0 ? 90 : -210);
-                        const badgeY = spotY - 70;
+                    // Floating Glass Card Pointer
+                    if (focusState === 'HOLDING' || focusState === 'LOCKING') {
+                        const badgeX = spotX + (spotX > 0 ? 80 : -220);
+                        const badgeY = spotY - 80;
 
                         ctx.strokeStyle = themeColor;
                         ctx.lineWidth = 1.5;
-                        ctx.setLineDash([4, 4]);
+                        ctx.setLineDash([3, 3]);
                         ctx.beginPath();
                         ctx.moveTo(spotX, spotY);
-                        ctx.lineTo(spotX + (spotX > 0 ? 40 : -40), spotY - 30);
-                        ctx.lineTo(badgeX + (spotX > 0 ? 0 : 200), badgeY + 30);
+                        ctx.lineTo(spotX + (spotX > 0 ? 30 : -30), spotY - 30);
+                        ctx.lineTo(badgeX + (spotX > 0 ? 0 : 210), badgeY + 35);
                         ctx.stroke();
                         ctx.setLineDash([]);
 
-                        // Floating Glassmorphism Country Name Callout Badge
-                        const bWidth = 210;
-                        const bHeight = 72;
+                        // Hologram Card
+                        const bW = 210;
+                        const bH = 75;
 
-                        ctx.fillStyle = 'rgba(8, 15, 30, 0.85)';
+                        ctx.fillStyle = 'rgba(6, 14, 28, 0.9)';
                         ctx.strokeStyle = themeColor;
                         ctx.lineWidth = 1.5;
 
-                        // Badge background container
                         ctx.beginPath();
-                        ctx.roundRect(badgeX, badgeY, bWidth, bHeight, 10);
+                        ctx.roundRect(badgeX, badgeY, bW, bH, 10);
                         ctx.fill();
                         ctx.stroke();
 
-                        // Badge Neon Header Bar
+                        // Header Bar
                         ctx.fillStyle = themeColor;
                         ctx.beginPath();
-                        ctx.roundRect(badgeX + 2, badgeY + 2, bWidth - 4, 18, [8, 8, 0, 0]);
+                        ctx.roundRect(badgeX + 2, badgeY + 2, bW - 4, 18, [8, 8, 0, 0]);
                         ctx.fill();
 
-                        // Badge Header Text
-                        ctx.fillStyle = '#020612';
+                        ctx.fillStyle = '#010409';
                         ctx.font = '900 10px Inter, sans-serif';
-                        ctx.fillText(`● TARGET LOCKED: ${country.status}`, badgeX + 10, badgeY + 14);
+                        ctx.fillText(`● TARGET LOCKED: ${currentCountry.city}`, badgeX + 8, badgeY + 14);
 
-                        // Country Name
+                        // Country Title
                         ctx.fillStyle = '#ffffff';
-                        ctx.font = '800 15px Inter, sans-serif';
-                        ctx.fillText(country.name, badgeX + 12, badgeY + 40);
+                        ctx.font = '800 16px Inter, sans-serif';
+                        ctx.fillText(currentCountry.name, badgeX + 10, badgeY + 42);
 
-                        // Capital City & Coordinates
+                        // Coordinates
                         ctx.fillStyle = themeColor;
-                        ctx.font = '600 11px Inter, sans-serif';
-                        const latStr = `${Math.abs(country.lat).toFixed(1)}°${country.lat >= 0 ? 'N' : 'S'}`;
-                        const lonStr = `${Math.abs(country.lon).toFixed(1)}°${country.lon >= 0 ? 'E' : 'W'}`;
-                        ctx.fillText(`${country.city} [ ${latStr}, ${lonStr} ]`, badgeX + 12, badgeY + 58);
-
-                        ctx.restore();
+                        ctx.font = '600 11px Space Grotesk, sans-serif';
+                        ctx.fillText(`LAT: ${currentCountry.lat}° | LON: ${currentCountry.lon}°`, badgeX + 10, badgeY + 62);
                     }
-                }
-
-            } else if (currentChannel === 2) {
-                // FINANCIAL MARKETS BAR & INDEX CHART WAVE
-                const barCount = 36;
-                const spacing = Math.min(w * 0.02, 26);
-                const startX = -((barCount * spacing) / 2);
-
-                ctx.fillStyle = themeColor;
-                for (let i = 0; i < barCount; i++) {
-                    const hBar = Math.sin(time * 2.2 + i * 0.25) * 85 + 100;
-                    const xPos = startX + i * spacing;
-                    ctx.globalAlpha = 0.35;
-                    ctx.fillRect(xPos, -hBar / 2, spacing - 5, hBar);
-                }
-
-                ctx.beginPath();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 3;
-                ctx.globalAlpha = 0.9;
-                for (let i = 0; i < barCount; i++) {
-                    const hBar = Math.sin(time * 2.2 + i * 0.25) * 85 + 100;
-                    const xPos = startX + i * spacing + (spacing / 2);
-                    const yPos = -hBar / 2 - 8;
-                    i === 0 ? ctx.moveTo(xPos, yPos) : ctx.lineTo(xPos, yPos);
-                }
-                ctx.stroke();
-
-            } else if (currentChannel === 3) {
-                // CYBER NETWORK TECH MESH
-                const hexR = 45;
-                ctx.strokeStyle = themeColor;
-                ctx.lineWidth = 1.2;
-
-                for (let i = -4; i <= 4; i++) {
-                    for (let j = -2; j <= 2; j++) {
-                        const hx = i * hexR * 1.6;
-                        const hy = j * hexR * 1.4 + (i % 2 === 0 ? 0 : hexR * 0.7);
-
-                        ctx.beginPath();
-                        ctx.globalAlpha = 0.25 + Math.sin(time * 2 + i + j) * 0.15;
-                        for (let k = 0; k < 6; k++) {
-                            const angle = (Math.PI / 3) * k + time * 0.1;
-                            const px = hx + Math.cos(angle) * hexR;
-                            const py = hy + Math.sin(angle) * hexR;
-                            k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-                        }
-                        ctx.closePath();
-                        ctx.stroke();
-                    }
+                    ctx.restore();
                 }
             }
 
-            ctx.restore();
+            ctx.restore(); // Restore center translate
 
-            // 5. HIGH-TECH REFLECTIVE STUDIO PERSPECTIVE FLOOR GRID
-            const floorY = h * 0.58;
-            ctx.save();
-            ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12)`;
-            ctx.lineWidth = 1;
-
-            for (let x = -w; x < w * 2; x += 80) {
-                ctx.beginPath();
-                ctx.moveTo(x, h);
-                ctx.lineTo(w / 2 + (x - w / 2) * 0.15, floorY);
-                ctx.stroke();
-            }
-
-            for (let y = floorY; y < h; y += 20) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(w, y);
-                ctx.stroke();
-            }
-            ctx.restore();
-
-            // 6. FLOATING DUST & BROADCAST PARTICLES
-            ctx.globalAlpha = 1;
+            // 10. FLOATING DUST PARTICLES
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -723,119 +911,115 @@
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.fillStyle = themeColor;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = themeColor;
+                ctx.globalAlpha = 0.4;
                 ctx.fill();
-                ctx.shadowBlur = 0;
+                ctx.globalAlpha = 1.0;
             });
 
-            requestAnimationFrame(drawStudioBackground);
+            requestAnimationFrame(renderScene);
         }
 
-        // PIP Canvas Loop
-        const pipCanvas = document.getElementById('pipCanvas');
-        const pipCtx = pipCanvas.getContext('2d');
-
-        function drawPip() {
-            if (!pipCanvas.parentElement) return;
-            pipCanvas.width = pipCanvas.parentElement.clientWidth;
-            pipCanvas.height = pipCanvas.parentElement.clientHeight;
-            const pw = pipCanvas.width;
-            const ph = pipCanvas.height;
-
-            pipCtx.fillStyle = '#020612';
-            pipCtx.fillRect(0, 0, pw, ph);
-
-            pipCtx.beginPath();
-            pipCtx.arc(pw / 2, ph / 2, ph / 2.6, 0, Math.PI * 2);
-            pipCtx.strokeStyle = themeColor;
-            pipCtx.globalAlpha = 0.5;
-            pipCtx.stroke();
-
-            pipCtx.beginPath();
-            pipCtx.moveTo(pw / 2, ph / 2);
-            pipCtx.arc(pw / 2, ph / 2, ph / 2.6, time * 2, time * 2 + 0.6);
-            pipCtx.fillStyle = themeColor;
-            pipCtx.globalAlpha = 0.25;
-            pipCtx.fill();
-
-            requestAnimationFrame(drawPip);
-        }
-
-        // CONTROL PANEL INTERACTORS
         const btnToggleDeck = document.getElementById('btnToggleDeck');
         const deckPanel = document.getElementById('deckPanel');
 
         btnToggleDeck.addEventListener('click', () => {
             deckPanel.classList.toggle('hidden');
-            playBeep(1200, 0.08);
+            playBeep(1100, 0.08);
         });
 
-        // TV Channel Switcher
-        const btnNextChannel = document.getElementById('btnNextChannel');
-        const channelLabel = document.getElementById('channelLabel');
+        // Map Style Buttons
+        const btnMapClear = document.getElementById('btnMapClear');
+        const btnMapFX = document.getElementById('btnMapFX');
+        const modeDisplay = document.getElementById('modeDisplay');
 
-        btnNextChannel.addEventListener('click', () => {
-            currentChannel = (currentChannel + 1) % channelConfigs.length;
-            const cfg = channelConfigs[currentChannel];
-            channelLabel.innerText = cfg.name;
-            setStudioThemeColor(cfg.color);
-            playBeep(1400, 0.15);
+        btnMapClear.addEventListener('click', () => {
+            mapStyleMode = 'CLEAR';
+            btnMapClear.className = "h-9 rounded-xl bg-brand-cyan/20 border border-brand-cyan text-brand-cyan font-bold text-xs transition-all";
+            btnMapFX.className = "h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-bold text-xs hover:border-brand-cyan transition-all";
+            modeDisplay.innerText = "CLEAR VECTOR HD";
+            playBeep(1300, 0.1);
         });
 
-        // Custom Color Picker Listener
-        const customColorPicker = document.getElementById('customColorPicker');
-        customColorPicker.addEventListener('input', (e) => {
-            setStudioThemeColor(e.target.value);
+        btnMapFX.addEventListener('click', () => {
+            mapStyleMode = 'FX';
+            btnMapFX.className = "h-9 rounded-xl bg-brand-cyan/20 border border-brand-cyan text-brand-cyan font-bold text-xs transition-all";
+            btnMapClear.className = "h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-bold text-xs hover:border-brand-cyan transition-all";
+            modeDisplay.innerText = "FULL TV FX";
+            playBeep(1300, 0.1);
         });
 
-        // Studio Theme Color Button Listeners
+        // Auto Target Cycling Toggle
+        const btnToggleAutoTarget = document.getElementById('btnToggleAutoTarget');
+        const autoTargetKnob = document.getElementById('autoTargetKnob');
+
+        btnToggleAutoTarget.addEventListener('click', () => {
+            autoTargetCycling = !autoTargetCycling;
+            if (autoTargetCycling) {
+                autoTargetKnob.style.left = '1.25rem';
+                btnToggleAutoTarget.className = "w-11 h-6 rounded-full bg-brand-cyan/30 border border-brand-cyan relative transition-all";
+            } else {
+                autoTargetKnob.style.left = '0.125rem';
+                btnToggleAutoTarget.className = "w-11 h-6 rounded-full bg-slate-800 border border-slate-700 relative transition-all";
+            }
+            playBeep(1000, 0.08);
+        });
+
+        // Checkbox Handlers
+        document.getElementById('chkScanlines').addEventListener('change', (e) => {
+            showScanlines = e.target.checked;
+            document.getElementById('scanlineOverlay').style.opacity = showScanlines ? '1' : '0';
+        });
+
+        document.getElementById('chkSatellites').addEventListener('change', (e) => {
+            showSatellites = e.target.checked;
+        });
+
+        document.getElementById('chkAtmosphere').addEventListener('change', (e) => {
+            showAtmosphere = e.target.checked;
+            document.getElementById('atmosphereDisplay').innerText = showAtmosphere ? 'ENABLED' : 'DISABLED';
+        });
+
+        document.getElementById('chkHUD').addEventListener('change', (e) => {
+            showHUD = e.target.checked;
+            document.getElementById('hudLayer').style.opacity = showHUD ? '1' : '0';
+        });
+
+        // Color Theme Selection
+        function applyColorTheme(color) {
+            themeColor = color;
+            document.getElementById('lowerThirdBox').style.borderColor = color;
+            document.getElementById('channelIcon').parentElement.style.borderColor = color;
+            document.getElementById('channelIcon').parentElement.style.color = color;
+            document.getElementById('customColorPicker').value = color;
+        }
+
         document.querySelectorAll('.theme-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const color = btn.dataset.color;
-                if (color) {
-                    setStudioThemeColor(color);
-                    customColorPicker.value = color;
-                    playBeep(1100, 0.1);
-                }
+                applyColorTheme(btn.dataset.color);
+                playBeep(1200, 0.08);
             });
         });
 
-        // Portrait vs Widescreen Orientation Toggle
-        const btnTogglePortrait = document.getElementById('btnTogglePortrait');
-        const aspectLabel = document.getElementById('aspectLabel');
-        let isPortrait = false;
-
-        btnTogglePortrait.addEventListener('click', () => {
-            isPortrait = !isPortrait;
-            if (isPortrait) {
-                broadcastViewport.className = "relative w-[380px] h-[675px] max-w-full max-h-screen rounded-3xl border-4 border-slate-800 shadow-2xl overflow-hidden transition-all duration-700 ease-in-out my-auto mx-auto";
-                aspectLabel.innerText = "9:16 Portrait";
-            } else {
-                broadcastViewport.className = "relative w-full h-full overflow-hidden transition-all duration-700 ease-in-out";
-                aspectLabel.innerText = "16:9 Landscape";
-            }
-            setTimeout(resizeCanvas, 350);
-            playBeep(950, 0.1);
+        document.getElementById('customColorPicker').addEventListener('input', (e) => {
+            applyColorTheme(e.target.value);
         });
 
-        // Emergency Strobe Flash
+        // Emergency Flash
         document.getElementById('btnEmergencyTrigger').addEventListener('click', () => {
             const overlay = document.getElementById('emergencyOverlay');
             overlay.classList.remove('opacity-0');
             overlay.classList.add('opacity-100', 'emergency-strobe');
 
-            playBeep(523, 0.2, 'sawtooth');
-            setTimeout(() => playBeep(659, 0.2, 'sawtooth'), 150);
-            setTimeout(() => playBeep(783, 0.3, 'sawtooth'), 300);
+            playBeep(500, 0.2, 'sawtooth');
+            setTimeout(() => playBeep(650, 0.2, 'sawtooth'), 150);
 
             setTimeout(() => {
                 overlay.classList.remove('opacity-100', 'emergency-strobe');
                 overlay.classList.add('opacity-0');
-            }, 3000);
+            }, 2500);
         });
 
-        // Fullscreen Toggle
+        // Fullscreen
         document.getElementById('btnFullscreen').addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
@@ -844,32 +1028,27 @@
             }
         });
 
-        // Auto-Hide Controls on Mouse Inactivity for Clean TV Broadcast Screen
+        // Auto-hide controls
         const directorDeck = document.getElementById('directorDeck');
-        let hideControlsTimeout = null;
+        let hideTimeout = null;
 
-        function showControlsTemporarily() {
-            directorDeck.classList.remove('opacity-0');
-            directorDeck.classList.add('opacity-100');
-            
-            clearTimeout(hideControlsTimeout);
-            hideControlsTimeout = setTimeout(() => {
+        function wakeControls() {
+            directorDeck.style.opacity = '1';
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
                 if (deckPanel.classList.contains('hidden')) {
-                    directorDeck.classList.remove('opacity-100');
-                    directorDeck.classList.add('opacity-0');
+                    directorDeck.style.opacity = '0.3';
                 }
-            }, 2500);
+            }, 3000);
         }
 
-        window.addEventListener('mousemove', showControlsTemporarily);
-        window.addEventListener('touchstart', showControlsTemporarily);
+        window.addEventListener('mousemove', wakeControls);
+        window.addEventListener('touchstart', wakeControls);
 
-        // Start Animation Loops on Window Load
         window.onload = function() {
             resizeCanvas();
-            drawStudioBackground();
-            drawPip();
-            showControlsTemporarily();
+            renderScene();
+            wakeControls();
         };
     </script>
 </body>
